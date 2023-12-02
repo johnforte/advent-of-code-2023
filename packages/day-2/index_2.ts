@@ -12,45 +12,35 @@ const getNumber = (line)=>{
     return Number(num);
 }
 
-const gamesUnderLimits =[];
+let sum = 0;
 
 for (const line of body.split("\n")) {
     if (line.trim().length === 0) {
         continue;
     }
-    const gameId = Number(/Game (\d+?):/.exec(line)[1]);
     const [_, games] = line.split(":");
     const game = games.replaceAll(";",',').split(',').map((_)=>_.trim());
-    let isOutOfTotal = false;
+    let red_max = 0;
+    let green_max = 0;
+    let blue_max = 0;
     for(const el of game){
-        let red_total = 0;
-        let blue_total = 0;
-        let green_total =0;
         if(el.endsWith("blue")){
             const num = getNumber(el);
-            blue_total += num;
-            if(blue_total > limits.blue){
-                isOutOfTotal= true;
-                break;
+            if(num > blue_max){
+                blue_max = num;
             }
         }else if(el.endsWith("green")){
             const num = getNumber(el);
-            green_total += num;
-            if(green_total > limits.green){
-                isOutOfTotal= true;
-                break;
+            if(num > green_max){
+                green_max = num;
             }
         }else if(el.endsWith("red")){
             const num = getNumber(el);
-            red_total += num;
-            if(red_total > limits.red){
-                isOutOfTotal= true;
-                break;
+            if(num > red_max){
+                red_max = num;
             }
         }
     }
-    if(!isOutOfTotal){
-        gamesUnderLimits.push(gameId);
-    }
+    sum+= (red_max* green_max * blue_max);
 }
-console.log(gamesUnderLimits.reduce((previousValue, currentValue)=>previousValue+currentValue, 0));
+console.log(sum);
